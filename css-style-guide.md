@@ -95,23 +95,19 @@ Common elements that style HTML tags. **No use of classes in here**, only HTML t
 
 Styles for components (or modules). What is a component? **A component is a distinct, independent unit**, that can be combined with other components to form a more complex structure. **Components are built to be reusable** in different contexts, can be nested one into the other or directly inserted into layouts. Components' style is also **independent** of the parent elements that wrap them.
 
-### 2.4 Layouts
-
-Layouts are the structure of each page and create the main areas where components will be placed. Due to the fact that layouts are just structures, we expect HTML and CSS to be very limited.
-
-### 2.5 Utilities
+### 2.4 Utilities
 
 Utilities and helper classes with the ability to override the styles defined in Global, Components and Layouts. Utilities include classes for **hidden elements**, **label and value** elements to show metadata, classes to set up a **sticky footer**.
 
-### 2.6 External frameworks
+### 2.5 External frameworks
 
-You're discouraged to use frameworks like Bootstrap of Foundation for complex and long term projects since you'll spend a lot of time undoing styles (see 1.6 Avoid undoing/overriding). If you use a framework, import it using a package manager (like NPM or Bower) and never modify the original files. Import the SASS files in the main **style.scss** and select only the files you really need (don't import the whole CSS). Be aware that using the theming options of the framework (like bootstrap-theme of Bootstrap) will add another layer of style.
+If using a framework like Bootstrap and Foundation import the SASS files in the main **style.scss** and select only the files you really need (don't import the whole CSS). Be aware that using the theming options of the framework (like bootstrap-theme of Bootstrap) will add another layer of style.
 
-### 2.7 Color scheme
+### 2.6 Color scheme
 
 It's a good habit to use a limited set of colors: using too many colors can lead to having a very incoherent interface that confuses the user. For this reason, we have a **color-scheme.scss** file that contains the variables **of all the colors used in the project**. This will limit the number of colors used that should be less than 15, including all the possible shades of grey used for borders and backgrounds. The file should be imported before the **variables.scss**.
 
-### 2.8 Style.scss file
+### 2.7 Style.scss file
 
 Outside the folders **Generic, Global, Components, Layouts, Utilities** we create the **style.scss** file which is responsible for importing all the needed SCSS files (that will be compiled by SASS).
 
@@ -154,67 +150,9 @@ Naming conventions in CSS are useful in making your code consistent and more inf
 
 **Camel case must not be used for classes**.
 
-### 3.1 Components and layouts
+### 3.1 Class prefix
 
-We use a simplified version of the <a href="http://getbem.com/" target="_blank">BEM guidelines</a> (we don't use the BEM's "modifier"). Components and layout classes are built using a simple **hyphen `-` delimited string**; their child elements have classes that are composed by the parent's class plus a custom part delimited using a **double underscore `__`**.
-
-E.g. you'll have a component that has the class `item-preview` and a child element that has the class `item-preview__metadata`.
-
-Example code:
-
-	<article class="item-preview">
-
-    	<div class="item-preview__thumb-caption-wrapper" >
-        	<a class="item-preview__thumb" href="...">
-            	<img class="item-preview__image">
-		        <p class="item-preview__caption" >
-		            Caption
-        		</p>
-		</div>
-    
-		<div class="item-preview__metadata">
-			<a class="item-preview__title-link">
-            	<h1 class="item-preview__title">
-            		Title
-            	</h1>
-	        </a>
-		    <h2 class="item-preview__subtitle">
-        		Subtitle
-        	</h2>
-			<p class="item-preview__description">
-        		Description
-	        </p>
-		</div>
-		
-	</article>
-
-When you have many nested elements, **always create a two levels class**, using the root components class as the first part:
-
-`component-root-class__child-or-grandchild-element-class`
-
-We **never** rely on HTML tags as CSS selectors: this guarantees that if another developer changes an HTML tag, the style of the page is not affected. For this reason, each HTML element must have a class.
-
-This HTML structure is reflected in SCSS files of components and layouts: these files usually opens with the root class (e.g. `.item-preview`) and all child elements (e.g. `item-preview__thumb`, `item-preview__*`) are nested at the first level, inside the root class. To avoid repeating the root class prefix in the child classes, please use the Sass Referencing Parent Selector (`&`) like this `&__thumb`, `&__title`. This solution allows to write less code and, in case the root class is changed, only one line of CSS must be updated. The SCSS code for the previously seen component example, would be:
-
-	.item-preview {
-		.&__thumb-caption-wrapper {
-			...
-		}
-		.&__thumb {
-			...
-		}
-		.&_image {
-		...
-		}
-		.&__caption {
-		}
-		...
-	}
-
-
-### 3.2 Class prefix
-
-In some projects, our CSS selectors could conflict with other stylesheets: this happens when we use a CSS framework or we are developing an application that must be embedded in other HTML pages. Let's say you have a **pagination component** and the root class is `pagination`. If this component is used in a page where Bootstrap or Foundation are also used, the framework's style could affect your component and vice-versa.
+In some projects, our CSS selectors could conflict with other stylesheets: this happens when we use a CSS framework or we are developing an application that must be embedded in other HTML pages.
 
 In these cases it's a good habit to add a short **prefix** to all our classes to avoid any kind of conflict: the prefix should be short (2 or 3 letters) and delimited by a hyphen `-`. If the project is called **MY PROJECT**, we will add a prefix `mp-` to all the classes and the pagination component will be:
 
@@ -224,141 +162,9 @@ In these cases it's a good habit to add a short **prefix** to all our classes to
 </div>
 ```
 
-### 3.3 Variables
-
-For variables names, we use the **hyphen `-` as string separator**. The string will be composed by parts ordered **hierarchically, starting from the higher level and going into more detail**.
-
-A couple of examples:
-
-	@footer-margin-bottom: 20px;
-	@pagination-border-top-width: 1px;
-
-The name of the variable starts from a higher level and each following part of the string defines a more detailed level.
-
-Variables that defines colors will start with `color-`:
-
-    @color-text-link-hover: @color-main;
-    @color-header-border-top: @color-border-light;
-
-Variables must be grouped into logical groups that must be introduced by a comment like:
-
-    // ------------------------------------ //
-    //  COLORS
-    // ------------------------------------ //
-
-and variables whose name is not easily understandable must be preceded by a comment like this:
-
-    // Sets the margin between the content and the footer
-    @content-margin-bottom: $space;
-
-Sometimes it's useful to define variables with values relative to other variables. This happens with colors where we can have a main color for links and a hover color which is **a lighter shade of the same color**:
-
-    @color-text-link: #0071bc;
-    @color-text-link-hover: lighten(@color-text-link, 25);
-
-This allows to change a single variable and affect many variables in our **variables.scss**.
-
-### 3.4 File naming conventions
-
-File organization, file naming and class naming are strictly related and very important to easily manage the project: naming conventions don't affect only class names, but some also file names. This is especially true for **components** and **layouts**.
-
-For instance, the same **component/layout name** will be used for:
-
-- the **name of the HTML file of the component/layout** (without prefix, see 3.2 Class prefix);
-- the **name of the corresponding SASS file of the component/layout** (without prefix, see 3.2 Class prefix);
-- the **class of the root element in the HTML**;
-- the **root SASS class** (the first class in the file).
-- related **JS/PHP/* file name**, depending on technology (without prefix, see 3.2 Class prefix).
-
 ---
 
-## 4. States
-States are used to style components that are in a special momentary condition like **active**, **disabled** or **loading**. In this case, we don't follow the BEM guidelines but we **add** a standalone state class at the **root element of the component**. State classes start with the prefix **"is-"** or **"has-"**.
-
-Some examples:
-
-- `is-active`
-- `has-loaded`
-- `is-loading`
-- `is-visible`
-- `is-disabled`
-- `is-expanded`
-- `is-collapsed`
-
-These classes must not have a style for themselves but are always styled in the context of the component where they are used.
-
----
-
-## 5. Grids
-We don't use a framework for grids: we use our own grid file that is placed in the **utilities** folder.
-Grids classes are usually named like:
-
-- `n7-grid-1`
-- `ms-grid-4`
-
-where `n7-` and `ms-` are the prefix of the project and `-1` and `-4` are the number of columns.
-
-In a more complex scenario or a mobile-first application grids classes are like this:
-
-- `n7-grid-4-2`
-- `ms-grid-2-3`
-
-the first case applies a grid with 4 columns that changes to 2 columns in a mobile view. The second case applies a grid with 2 columns (in a mobile first application) that changes to a 3 columns in desktop view.
-
-These are the only classes that describe the style of the interface (see 3. Naming conventions): you can easily add these classes to an HTML element whenever you need to display in a grid its direct child elements.
-
-Grid files can exploit 3 different systems to correctly position elements:
-- **CSS Grid Layout**
-- **Flexbox**
-- **Float**
-
-We usually prefer **CSS Grid Layout**, but the other technologies must be used when compatibility with older browsers is required (i.e. stick to float if you need to support IE 10).
-
-### 5.1 Grid file example
-
-Here's an example excerpt from a CSS grid file.
-
-```
-/**
- * GRIDS
- *
- * Helper class to display elements in grids.
- * Apply the class to the container of the griddable elements (like cards). Direct descendants will be gridded.
- */
-
-/* ------------------------------------ *\
-   #GRIDS
-\* ------------------------------------ */
-/* General grid setting */
-[class^="n7-grid-"] {
-    display: grid;
-    grid-column-gap: $grid-gutter-h;
-    grid-row-gap: $grid-gutter-v;
-}
-
-/* 4 */
-.n7-grid-4 {
-    grid-template-columns: repeat(4, 1fr);
-}
-
-...
-
-/* ------------------------------------ *\
-   #MEDIA-QUERIES
-\* ------------------------------------ */
-@media all and (max-width: $breakpoint-smartphone-portrait) {
-
-    /* 4 */
-    .n7-grid-4 {
-        grid-template-columns: 1fr;
-    }
-
-}
-```
-
----
-
-## 6. Formatting
+## 4. Formatting
 
 Before we discuss how we write our rulesets, let’s first familiarise ourselves with the relevant terminology:
 
@@ -411,52 +217,6 @@ the end of each main section of code.
 ### 6.2 Colors
 
 We use hex color codes (`#f0f0f0`). Short hex colors and color names (e.g. **red**) are not allowed. Letters in the hex color must be lowercase.
-
-
-### 6.3 Declarations order
-
-Declarations inside a ruleset will be organized following this order:
-
-1. **Box model:**
-
-        display: block;
-        float: right;
-        box-sizing: border-box;
-        width: 100px;
-        height: 100px;
-        margin: 0;
-        padding: 0;
-
-2. **Positioning:**
-
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 100;
-
-3. **Visual** (Borders & Background):
-
-        background-color: #f5f5f5;
-        border: 1px solid #e5e5e5;
-        border-radius: 3px;
-
-4. **Typography:**
-
-        font-weight: 100;
-        font-size: 13px;
-        font-family: Helvetica;
-        line-height: 1.5;
-        color: #333;
-        text-align: center;
-        text-transform: uppercase;
-
-5. **Misc:**
-
-        animations, transforms, etc.
-
-This is not a strict rule (and won't be checked by StyleLint) but you're encouraged to follow this guideline.
 
 ---
 
