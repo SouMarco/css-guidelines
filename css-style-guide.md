@@ -10,11 +10,7 @@ The aim of these guidelines is to speed up development, make it easy for new dev
 
 The CSS code will be written using <a href="https://sass-lang.com/" target="_blank">**SASS preprocessor**</a> with SCSS syntax. We don't use **LESS** or any other preprocessor.
 
-### 1.2	Task management
-
-SASS will be compiled with a **task manager**. This allows all developers working on the same project to compile SASS using the same tool. In the last years we've been using the <a href="https://blog.teamtreehouse.com/use-npm-task-runner" target="_blank">NPM task runner</a>, but also other task managers like <a href="https://gulpjs.com/" target="_blank">Gulp</a> or <a href="https://gruntjs.com/" target="_blank">Grunt</a> can be used.
-
-### 1.3	Tabs and spaces
+### 1.2	Tabs and spaces
 
 For indentation and formatting of the code, **we don’t use tabs but spaces**. Please set up your code editor with these settings:
 
@@ -24,27 +20,19 @@ For indentation and formatting of the code, **we don’t use tabs but spaces**. 
 
 Spaces are the only way to guarantee code renders the same in any person's environment. Please setup your VS Code to adopt these formatting rules.
 
-### 1.4	HTML inline styles
+### 1.3	HTML inline styles
 
 **Never** write inline style in the HTML code.
 Inline styles generate critical **<a href="http://www.smashingmagazine.com/2007/07/27/css-specificity-things-you-should-know/" target="_blank">specificity problems</a>**
 that might be very difficult to fix and impose the use of `!important`.
 
-
-### 1.5	Temporary CSS
-
-Sometimes is necessary to write a CSS declaration very fast and it might not be possible to compile the SASS files.
-**It is mandatory not to edit the style.css compiled by SASS: these modifications will be lost the next time a developer compiles the CSS**.
-
-For this reason, we create a static **temporary.css** file that is linked in the HTML right after the style.css: in this file is possible to write CSS declarations when it is not possible to compile the SASS file. This must be used only for critical situations and urgent bug fixings. Then the declarations in this file must be moved to the SASS files: the temporary CSS file must be empty most of the time.
-
-### 1.6 Avoid undoing/overriding
+### 1.4 Avoid undoing/overriding
 
 **You're undoing CSS when you are writing declarations that override other declarations written somewhere else in the code.** This means that HTML elements are affected by too many conflicting CSS declarations and you'll need to rely on specificity to style correctly the element.
 
 **Undoing is a bad way of coding** and we must always minimize undoing from the above levels. This typically happens in projects where we start with a CSS framework and then we realize we are writing a lot of declarations to overwrite the default framework's style (see 2.6 External frameworks).
 
-### 1.7 80 characters wide
+### 1.5 80 characters wide
 
 Where possible, limit CSS files width to 80 characters. Reasons for this include:
 
@@ -52,29 +40,11 @@ Where possible, limit CSS files width to 80 characters. Reasons for this include
   - viewing CSS on sites like GitHub, or in terminal windows;
   - providing a comfortable line length for comments.
 
-### 1.8 Style Lint
+### 1.6 Style Lint
 
 SASS files must be verified with the linting tool <a href="http://stylelint.io/" target="_blank">Style Lint</a>. Style linting must be set up as a task in the task manager and run whenever a SASS file is modified. Our stylelint file is available <a href="https://github.com/gandreini/css-guidelines/blob/master/stylelintrc" target="_blank">here</a>.
 
-### 1.9 Spacing unit
-
-All margins and paddings must be expressed using the variable:
-
-`$space: 10px;`
-
-The base value is `10px` but you can also set the variable to your own base value (e.g. `8px`). If you need different values you can multiply the variable:
-
-`margin-bottom: $space*2;`
-
-It is recommended to multiply `$space` by integers or multiples of 0.5.
-
-The benefits of using this variable are:
-
-- faster CSS coding;
-- a more coherent spacing of elements;
-- changing the value of `$space` of a few pixels, you can change the overall look and feel of your UI in seconds.
-
-### 1.10	HTML 5
+### 1.7	HTML 5
 
 HTML 5 tags must be used when writing HTML markup. These semantic elements clearly describe their meaning to both the browser and the developer.
 
